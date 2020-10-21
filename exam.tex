@@ -1,0 +1,901 @@
+\documentclass[12pt]{article}
+
+\usepackage{cmap}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+% \usepackage[russian, english]{babel}
+\usepackage[russian]{babel}
+\usepackage{graphicx}
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage[russian,colorlinks=true,urlcolor=blue,linkcolor=blue, citecolor=blue]{hyperref}
+\usepackage{enumerate}
+\usepackage{datetime}
+% \usepackage{minted}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage{tikz}
+\usepackage{epstopdf}
+\usepackage{xifthen}
+\usepackage{ dsfont }
+\usepackage{ wasysym }
+\usepackage{ upgreek }
+\usepackage{ listings }
+\usepackage{tikzsymbols}
+\usepackage{enumitem}
+% \usepackage{ complexity }
+
+\graphicspath{{img/}}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
+\parskip=0em
+\parindent=0em
+
+\sloppy
+\voffset=-20mm
+\textheight=235mm
+\hoffset=-25mm
+\textwidth=180mm
+\headsep=12pt
+\footskip=20pt
+
+\setcounter{page}{1}
+
+% Основные математические символы
+\DeclareSymbolFont{extraup}{U}{zavm}{m}{n}
+\DeclareMathSymbol{\heart}{\mathalpha}{extraup}{86}
+\newcommand{\N}{\mathbb{N}}   % Natural numbers
+% \newcommand{\R}{\mathbb{R}}   % Ratio numbers
+\newcommand{\Z}{\mathbb{Z}}   % Integer numbers
+\def\EPS{\varepsilon}         %
+\def\SO{\Rightarrow}          % =>
+\def\EQ{\Leftrightarrow}      % <=>
+\def\t{\texttt}               % mono font
+\def\s{\textsc}               % small capitals (for problem names)
+\def\c#1{{\rm\sc{#1}}}        % font for classes \t{NP}, SAT, etc
+\def\O{\mathcal{O}}           %
+\def\NO{\t{\#}}               % #
+\def\edge{\leftrightarrow}    % <->
+\renewcommand{\le}{\leqslant} % <=, beauty
+\renewcommand{\ge}{\geqslant} % >=, beauty
+\def\XOR{\text{ {\raisebox{-2pt}{\ensuremath{\Hat{}}}} }}
+\newcommand{\q}[1]{\langle #1 \rangle}               % <x>
+\newcommand\URL[1]{{\footnotesize{\url{#1}}}}        %
+\newcommand{\sfrac}[2]{{\scriptstyle\frac{#1}{#2}}}  % Очень маленькая дробь
+\newcommand{\mfrac}[2]{{\textstyle\frac{#1}{#2}}}    % Небольшая дробь
+\newcommand{\score}[1]{{\bf\color{red}{(#1)}}}
+\newcommand{\per}{\operatorname{per}}
+\newcommand{\cool}[1]{\mathcal{#1}}
+
+\def\OK{{\color{dkgreen}{\pmb{\checkmark}} }} 
+\def\PR{{\color{yellow}{\pmb{\checkmark}} }} 
+\def\MH{{\color{red}{\pmb{\checkmark}} }} 
+\def\TODO{{\color{yellow}{\bf TODO}}}
+
+% Отступы
+\def\makeparindent{\hspace*{\parindent}}
+\def\up{\vspace*{-0.3em}}
+\def\down{\vspace*{0.3em}}
+\def\LINE{\vspace*{-1em}\noindent \underline{\hbox to 1\textwidth{{ } \hfil{ } \hfil{ } }}}
+%\def\up{\vspace*{-\baselineskip}}/
+\DeclareMathOperator{\pw}{pw}
+\DeclareMathOperator{\tw}{tw}
+\DeclareMathOperator{\bw}{bw}
+
+
+% \lhead{Вопросы к экзамену}
+% \renewcommand{\subsectionmark}[1]{\markboth{#1}{}}
+% \fancyhead[R]{\leftmark}
+\lhead{}
+\rhead{\rightmark}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\lfoot{\today \ \currenttime}
+\cfoot{\thepage\t{/}\pageref*{LastPage}}
+\rfoot{Автор: Александра Олемская}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtheorem{theorem}{Theorem}
+
+\newenvironment{MyList}[1][4pt]{
+  \begin{enumerate}[1.]
+  \setlength{\parskip}{0pt}
+  \setlength{\itemsep}{#1}
+}{       
+  \end{enumerate}
+}
+\newenvironment{InnerMyList}[1][0pt]{
+  \vspace*{-0.5em}
+  \begin{enumerate}[a)]
+  \setlength{\parskip}{#1}
+  \setlength{\itemsep}{0pt}
+}{
+  \end{enumerate}
+}
+
+\newcommand{\Section}[1]{
+  \refstepcounter{section}
+  \addcontentsline{toc}{section}{\arabic{section}. #1} 
+  %{\LARGE \bf \arabic{section}. #1} 
+  {\Large \bf #1} 
+  \vspace*{1em}
+  \makeparindent\unskip
+}
+\newcommand{\Subsection}[1]{
+  \refstepcounter{subsection}
+  \addcontentsline{toc}{subsection}{\arabic{section}.\arabic{subsection}. #1} 
+  {\large \bf \arabic{section}.\arabic{subsection}. #1} 
+  \vspace*{0.5em}
+  % \makeparindent\unskip
+}
+
+% Код с правильными отступами
+\newenvironment{code}{
+  \VerbatimEnvironment
+
+  \vspace*{-0.5em}
+  \begin{minted}{c}}{
+  \end{minted}
+  \vspace*{-0.5em}
+
+}
+
+% Формулы с правильными отступами
+\newenvironment{smallformula}{
+ 
+  \vspace*{-0.8em}
+}{
+  \vspace*{-1.2em}
+  
+}
+\newenvironment{formula}{
+  
+  \vspace*{-0.4em}
+}{
+  \vspace*{-0.6em}
+  
+}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{brown}{rgb}{0.5,0.5,0}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\dkgreen}[1]{{\color{dkgreen}{#1}}}
+
+\definecolor{dkgreen}{rgb}{0,0.4,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{lightgray}{rgb}{0.95,0.95,0.95}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\def\commentstyle{\color{dkgreen}}
+\lstset{ %
+  language=C++,                   % the language of the code
+  basicstyle=\footnotesize\ttfamily, % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\footnotesize\color{black},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
+                                  % will be numbered
+  numbersep=0.7em,                % how far the line-numbers are from the code
+  backgroundcolor=\color{lightgray}, % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  identifierstyle=\color{blue!25!black},  
+  keywordstyle=\color{blue!90!black},      % keyword style
+  commentstyle=\commentstyle,     % comment style
+  stringstyle=\color{mauve},      % string literal style
+  escapeinside={\`}{\`},          % if you want to add a comment within your code
+  escapebegin=\commentstyle\footnotesize,
+  %morekeywords={n,k},             % if you want to add more keywords to the set
+  morecomment=[l][\color{dkgreen}]{\#}, % to color #include<cstdio> 
+  morecomment=[s][\commentstyle\color{gray!50!black}]{/**}{*/},
+  texcl=true
+}
+
+\usepackage{letltxmacro}
+\newcommand*{\SavedLstInline}{}
+\LetLtxMacro\SavedLstInline\lstinline
+\DeclareRobustCommand*{\lstinline}{%
+  \ifmmode
+    \let\SavedBGroup\bgroup
+    \def\bgroup{%
+      \let\bgroup\SavedBGroup
+      \hbox\bgroup
+    }%
+  \fi
+  \SavedLstInline
+}
+
+
+\author{Александра Олемская, СПб ВШЭ}
+\title{Вопросы к экзамену по Информационному поиску}
+
+\begin{document}
+\pagestyle{fancy}
+
+\tableofcontents
+\pagebreak
+
+\setlist[itemize]{topsep=1pt, partopsep=3pt, itemsep=1pt}
+
+\section{} %1
+
+  \subsection{Онлайн тестирование. A/B testing, interleaving}
+    {\bf Простые кликовые метрики}:
+      \begin{itemize}
+          \item Click
+            \begin{itemize}
+              \item Click-through rate (CTR)~--- сколько раз кликнули
+              \item Click rank (reciprocal rank)~--- как далеко был сделан клик
+              \item Abandonment
+            \end{itemize}
+          \item Time
+            \begin{itemize}
+              \item Dwell time (сколько смотрят на страничку)
+              \item Time to first click
+              \item Time to last click
+            \end{itemize}
+          \item Queries
+            \begin{itemize}
+              \item Number of reformulations
+              \item Number of abandoned queries
+            \end{itemize}
+      \end{itemize}
+    \smallskip
+    {\bf A/B testing}\\
+    Control/Treatment\\
+    Treatment даём $0.5-1.0\%$ пользователей
+
+    \smallskip
+    Минусы:
+      \begin{itemize}
+        \item пользователи сильно разные
+        \item не очень чувствительны (т.к. пользователи и там, и там пару верхних строчек смотрят тоже)
+        \item нужно много статистики собрать 
+      \end{itemize}
+    \smallskip \smallskip
+    {\bf Interleaving}\\
+    Смешиваем Control и Treatment
+    Team Draft interleaving: на каждую позицию подкидываем монетку и берём следующий итем из соответствующей выборки (надо учитывать одинаковые итемы)\\
+    Можем сравнивать только одинаковые системы (нельзя дизайн сравнить, например)
+    \pagebreak
+
+  \subsection{Поиск дубликатов. Hash. Shingles}
+    Хотим бороться с Mirroring сайтами, например\\
+    Если хотим совсем одинаковый контент детектить, можно просто страничку хешировать.
+
+    \smallskip
+    \smallskip
+    {\bf Near duplicate detecting}
+    \begin{itemize}
+      \item Выписываем все n-граммы ($n \in [4, 9]$)
+      \item Считаем хэши от n-грамм
+      \item Считаем Jaccard coefficient (расстояние между множествами)\\
+      $J(d_1, d_2) = \frac{|H(d_1) \cap H(d_2)|}{|H(d_1) \cup H(d_2)|}$ 
+      \item Говорим, что дубликаты, если $J(d_1, d_2) > treshold$
+      \item n-грамм много, получится долго, так что на практике просто берут первые $k$ (по алфавиту) хэшей
+    \end{itemize}
+
+\pagebreak %------------------------
+
+\section{} %2
+
+  \subsection{Оффлайн тестирование. Precision@k, recall@k, F-measure, MAP}
+    Это оценки, которые не учитывают ранк (т.е. просто нашли/не нашли)\\
+    $$Precision = \frac{\#(relevant~items~retrieved)}{\#(items~revrieved)} = P(relevant|retrieved)$$
+    $$Recall = \frac{\#(relevant~items~retrieved)}{\#(relevant~items)} = P(retrieved|relevant)$$
+    \smallskip \smallskip
+    {\bf F-measure}
+    $$F_{\beta} = \frac{1}{\alpha \frac{1}{recall} + (1 - \alpha) \frac{1}{precision}}$$
+    где $\beta = \frac{1 - \alpha}{\alpha}$ (насколько precision важнее recall)\\
+    $F_1$-мера~--- среднее гармоническое просто
+
+    \smallskip \smallskip
+    {\bf @k}
+    $$P@k = \frac{\#(relevant~items~at~k)}{k}$$
+    Хотим, чтобы была поближе к 1
+    $$R@k = \frac{\#(relevant~items~at~k)}{\#(relevant items)}$$
+    Странная штука, в абсолютной величине мало что значит
+
+    \smallskip
+    {\bf Reciprocal rank}
+    $$RR = \frac{1}{rank~of~the~first~relevant~item}$$
+    В идеале, конечно, 1
+
+    \smallskip \smallskip
+    {\bf Average precision (AP)}
+    $$AP = \frac{\sum_{k}^{\#(relevant~items)} P@k}{\#(relevant~items)}$$
+
+    \smallskip \smallskip
+    {\bf Average over multiple queries}\\
+    mean P@k, mean R@k, MRR, MAP (mean average precision = \textit{средняя средняя точность, хаха})
+    \pagebreak
+  \subsection{Обратный индекс. Типы обратных списков}
+    {\bf Inverted index}\\
+    Делается из forward index'а. По терму даёт документы, в которых он встречается.\\
+    Храним словарь:
+      \begin{itemize}
+          \item Число документов
+          \item Указатель на начало списка (inverted list)
+          \item Какие-то ещё \textit{мета}-данные
+      \end{itemize}
+    Какое-нибудь B-дерево или хэш-таблица там..
+
+    \smallskip
+  {\bf Inverted lists}
+    \begin{itemize}
+        \item Document identifiers\\
+          просто список документов, где терм встречается
+        \item Frequencies\\
+          для каждого документа ещё храним, сколько раз там есть этот терм\\
+          можно раздавать им weight/score, например, слово в заголовке/abstract/external link важнее\\
+          учитывать частотность тоже можно
+        \item Positions\\
+        храним пары <документ, позиция>
+        чтобы искать только \textit{tropical fish}, а неtropical \textit{fish} или \textit{tropical} неfish не искать
+    \end{itemize}
+    В каком порядке это всё писать?\\
+    Как бы, проходить все документы каждый раз не очень полезно, мы большую часть из них вообще никогда выдавать не будем.\\
+    Можно посортить документы по весу\\
+    Но тогда пары (tropical fish) искать не удобно :(\\
+    Сделаем несколько бинов по весу, а внутри их посортим уже лексикографически
+
+\pagebreak %------------------------
+
+\section{} %3
+
+  \subsection{Оффлайн тестирование. DCG, NDCG, Rank-biased precision, expected reciprocal rank}
+  Учитываем поведение пользователя на поисковой страничке.
+
+  \smallskip
+  {\bf Discounted cumulative gain (DCG)}\\
+  $R_i$~--- graded relevance ($[0 \dots 4]$)\\
+  Тут Gain~--- польза для пользователя
+  $$CG@k = \sum\limits_{i = 1}^k (2^{R_i} - 1)$$
+  $$DCG@k = \sum\limits_{i = 1}^k \frac{2^{R_i} - 1}{\log (i + 1)}$$
+  Normalized
+  $$NDCG@k = \frac{DCG@k}{DCG_{ideal}@k}$$
+  Ideal~--- считаем $DCG$ от оптимального набора relevance (4, 4, 3, 2, 2, 1, 0), например
+
+  \smallskip
+  {\bf Rank-biased precision}\\
+  Моделируем поведение пользователя:
+  \begin{itemize}
+    \item Смотрим следующий итем с вер-ю $\theta$
+    \item Соответственно, выходим с вер-ю $(1 - \theta)$ 
+    \item Вер-ть посмотреть на $k$-ый итем, $P(look~at~k) = \theta^{k - 1}$
+    \item Матожидание числа итемов: $Avg\#exam = \sum k \cdot \theta^{k - 1} (1 - \theta) = \frac{1}{1 - \theta}$
+    \item Utility at rank k, $U@k = P(look~at~k) \cdot R_k = \theta^{k - 1} \cdot R_k$
+    \item RBP~--- усреднённая $U@k$, $RBP = \frac{\sum U@k}{Avg\#exam}$
+    \item $\theta$ близка к 1
+  \end{itemize}
+
+  \smallskip
+  {\bf Expected reciprocal rank (ERR)}
+  \begin{itemize}
+    \item Считаем, что пользователь останавливается когда находит релевантный результат
+    \item Вероятность остановиться, $\zeta_i = \frac{2^{R_i} - 1}{2^{R_{max}}}$
+    \item $ERR = \sum \frac{1}{k} \cdot \theta^{k - 1} \cdot \zeta_k \cdot \prod^{k - 1} (1 - \zeta_i)$\\
+    $\theta$ на случай, если пользователю наскучит искать
+
+  \end{itemize}
+  \pagebreak
+
+  \subsection{Кроулеры. Порядок обхода}
+  Crawling~--- потому что они как паучки, которые ползают по мировой паутине.\\
+  Основные два объекта, которые он собирает~--- содержание страницы и ссылки.
+
+  Общая схема, что делает кроулер: берёт страничку, данные кладёт в storage, смотрит на исходящие ссылки, если там что-то интересное, кладёт их в очередь
+
+  \smallskip\smallskip
+
+  Какие бывают кроулеры:
+    \begin{itemize}
+      \item Vertical Search Engine~---
+        ищет в одной конкретной области
+      \item Personal Crawler
+      \item Shopbots~---
+        Выискивают цены)
+      \item Feed Crawlers
+      \item Archive Crawlers~--- 
+        работают на системы, занимающиеся архивацией интернета
+      \item Mirroring Systems~---
+        смотрят, обновилась ли основная страница, чтобы обновлять зеркала
+    \end{itemize}
+
+  \smallskip\smallskip
+  Какие бывают странички:
+    \begin{itemize}
+      \item Private~--- что вообще не подключено к мировой сети
+      \item Surface Web~--- куда можно попасть по ссылке (индексируется)
+      \item Deep Web~--- куда нельзя попасть не заполняя форму (не индексируется)
+      \item {\bf D}a{\bf R}k {\bf W}e{\bf B}~--- где происходят \textit{тёмные делишки}
+    \end{itemize}
+
+  \smallskip\smallskip
+  Есть понятие \textit{crawler politeness}: нужно представляться, читать robots.txt, не нагружать сайт сильно-сильно
+
+  \smallskip
+  В каком порядке обрабатывать сайты?\\
+  Есть такое понятие \textit{frontier}~--- странички, про которые мы знаем, что они есть (у нас есть ссылки на них), но ещё не посетили их. Вот по нему в каком-нибудь порядке и ходим (random/bfs/in-degree/potential impact on search quality)
+
+
+\pagebreak %------------------------
+
+\section{} %4
+
+  \subsection{Сбор тестовой коллекции. Оценка релевантности}
+    {\bf Test collection:}
+      \begin{itemize}
+        \item Test documents\\
+          репрезентативная коллекция для вашей поисковой системы, похожего содержания, размера и типа\\
+          \textit{Да, это сложно}
+        \item Test queries\\
+          Откуда брать запросы? Если у вас есть уже какая-то простая более-менее работающая система, можно собирать из неё логи\\
+          Ну или можно какой-нибудь соц опрос устроить
+        \item Ground truth\\
+          Это делают только люди (assessors). Что за люди:
+            \begin{itemize}
+                \item юзеры (через какую-нибудь форму обратной связи)
+                \item независимые (не пользователи) эксперты
+                \item crowdsourcing (не очень хорошие асессоры) 
+            \end{itemize}
+          Нужно достаточно много оценок, желательно, чтобы оценки хорошо покрывались (было и много 0, и много 4). И нужно, чтобы каждую пару запрос-документ несколько человек оценило. По логике всё, в общем.
+      \end{itemize}
+      Есть много уже собранных датасетов (их к конференциям/соревнованиям разным собирают). Самый главный~--- TREC (Test REtrieval Conference).
+
+      \smallskip\smallskip
+      {\bf Оценки релевантности} (\textit{relevance}): $[0, 4]$, $[0, 3]$\\
+      4 = супер хорошо, 2-3 = нормально.\\
+      Бывает ещё когда 4 = vital (супер обязательно, например, страничка из вики)\\
+      Ещё бывает $-1 = $ spam
+
+      \smallskip\smallskip
+      {\bf Assessment pooling.}\\
+       Depth-k pooling. Берём несколько простых систем (или не простых), задаём каждой запрос, берём от каждой top-k, даём асессорам на оценку.
+
+      Смотрим ещё на {\bf inter-assessor agreement.} Считаем Cohen's kappa coefficient (для двух асессоров).
+
+      $K = \frac{P(A) - P(E)}{1 - P(E)}$,\\
+      $P(E)$~--- ожидаемая вероятность совпадения (сумма произведений для каждой оценки),\\
+      $P(A)$~--- совпадения на самом деле.
+
+      Если пацанов несколько, считаем среднее попарное $K$.
+
+      Если $K > 0.8$~--- хорошо, $K < 0.67$~--- плохо, скорее всего плохо написали инструкцию для асессоров.
+      \pagebreak
+
+  \subsection{Ранжирование. RankNet, LambdaRank}
+      Тут будет ML \dots (нет)\\
+      Ну вот у нас есть вектор $(q, x_1 \dots x_n)$ ($q$~--- запрос, $x_i$~--- фичи документа), хотим по ним предсказывать релевантность $y$.\\
+      В качестве фичей можно использовать как раз всё, что использовали раньше (до мля): TF-IDF всякие, BM25, PageRank, HITS и ещё кучу всего.\\
+      Хорошо ещё кликовые фичи работают.\\
+      В чём их проблема: есть эффект доверия поисковику, поэтому кликовые фичи получается как бы включают в себя ещё и результат всей системы ранжирования. Ещё так трудно найти что-то новое, важность клика не даст нам поднять хороший сайт со второй страницы выдачи на первую
+
+      \smallskip\smallskip
+      Есть три типа алгоритмов, как обучать машины ранжированию:
+        \begin{itemize}
+            \item Pointwise~--- просто предсказывать релевантность (классификация/регрессия) (ну как я в начале написала)\\
+            Беда в том, что мы можем хорошо угадывать порядок (документов), но при этом плохо попадать в само число (релевантность)
+            \item Pairwise~--- для пары документов определяем, кто их них лучше (компаратор, короче)
+            \item Listwise~--- ну а тут список целиком
+        \end{itemize}
+
+      \smallskip\smallskip
+      {\bf RankNet}\\
+      Он делает Pairwise\\
+      Так, у нас есть Pointwise scoring function $f(x_i)$\\
+      Ground truth: $\overline{P}_{ij} = \mathcal{I}(x_i > x_j)$\\
+      Хотим приближать вероятность $(x_i > x_j)$ с помощью логистической регрессии\\
+      $P_{ij} = P(x_i > x_j) = \frac{1}{1 + e^{-\sigma(f_i - f_j)}}$
+      Считаем pairwise loss function (это просто кросс-энтропия), ну, собственно, её и оптимизируем.\\
+      $C = -\overline{P}_{ij} \log P_{ij} - (1 - \overline{P}_{ij}) \log (1 - P_{ij}) = (1 - \overline{P}_{ij}) \sigma(f_i - f_j) + \log (1 + e^{-\sigma(f_i - f_j)})$\\
+
+      тут я устала от этого вашего машинного обучения, тем более были только беспруфные кукареки какие-то \dots
+    
+
+\pagebreak %------------------------
+
+\section{} %5
+
+  \subsection{Кроулеры. Обновление базы. Freshness age, expected age. Очереди обходов}
+  Хотим хорошо обновлять свою базу, т.е:
+    \begin{itemize}
+        \item Детектить изменения\\
+          есть свойство \t{last modified} у странички
+        \item Обрабатывать изменения
+        \item Предсказывать изменения
+        \item Выбирать, когда и в каком порядке что апдейтить
+    \end{itemize}
+
+    \smallskip\smallskip
+    {\bf Freshness}\\
+    $F_p(t) = 
+    \begin{cases}
+      1 &\text{страничка {\bf НЕ} поменялась с последнего crawl'а}\\
+      0 &\text{иначе}
+    \end{cases}$
+
+    Плохая метрика, т.к. не различает для часто меняющихся страничек, обновляем мы их раз в час, или раз в год
+    
+    \smallskip\smallskip
+    {\bf Age}\\
+    $A_p(t) = $ время, прошедшее с {\bf первого} изменения странички, произошедшего после последнего crawl'а
+
+    \smallskip\smallskip
+    {\bf Expected age}\\
+    $\lambda$~--- среднее число изменений в день\\
+    $A_p(\lambda, t) = \int\limits_0^t P_{changed}(x)(t - x)dx = \int\limits_0^t \lambda e^{- \lambda x} (t - x) dx$
+    Тактика: походили на сайт достаточно часто, выяснили $\lambda$, потом используем её.
+
+    \smallskip \smallskip
+    Какие страницы вообще надо апдейтить (что учитываем):
+      \begin{itemize}
+        \item Average daily click count
+        \item Estimated update frequency
+      \end{itemize}
+
+    \smallskip \smallskip
+    Делаем несколько очередей:
+      \begin{itemize}
+          \item Новостные сайты (популярные и обновляются часто)
+          \item Популярные, но обновляются не так часто
+          \item Остальные сайты
+      \end{itemize}
+    \pagebreak
+  \subsection{Ранжирование. TF-IDF, BM25}
+    Это простые методы, которыми пользовались, пока не научились обучать машины (сейчас они используются как фичи для машинок)
+
+    \smallskip\smallskip
+    Вообще, ранкинг бывает трёх типов:
+      \begin{itemize}
+        \item Term-based
+        \item Link-based
+        \item ML-based
+      \end{itemize} 
+    В этом вопросе всё term-based
+
+    \smallskip\smallskip
+    {\bf Vector space model}\\
+    Документ~--- это вектор термов (1/weight на позиции соответствующего терма из словаря). Понятно, что запрос~--- это тоже вектор, но более sparse.\\
+    Самый просто вариант~--- искать самый близкий к вектору-запросу вектор-документ.\\
+    Используем для этого косинусное расстояние (косинус угла между векторами)
+    $$Cosine(D_i, Q) = \frac{D_i \cdot Q}{||D_i||~||Q||} = \frac{\sum d_{i, j} \cdot q_j}{\sqrt{(\sum d_{i, j}^2) \cdot (\sum q_j^2)}}$$
+    Скалярное произведение быстро считается (используя inverted index), т.к. не 0 там будет только для термов из запроса. Ну а нижние корни~--- это просто константы.\\
+    Веса (weights):
+      \begin{itemize}
+        \item binary (0/1)
+        \item Term Frequency (обычно просто raw count)
+        \item TF-IDF
+      \end{itemize}
+
+    \smallskip\smallskip
+    {\bf TF-IDF}\\
+    На самой деле это целый класс подходов к оценке частот термов.\\
+    $d_{ik} = \text{TF-IDF}(i, k) = tf_{ik} \cdot idf_{ik}$
+
+    \smallskip\smallskip
+    {\bf Term Frequency (TF)}\\
+    $tf_{ik} = \frac{f_{ik}}{\sum_j f_{ij}}$,\\ где $f_{ik}$~--- сколько раз терм $k$ встречается в документе $D_i$
+
+    \smallskip\smallskip
+    {\bf Inversed Document Frequency (IDF)}\\
+    $idf_k = \log \frac{N}{n_k}$,\\ где $N$~--- число документов, $n_k$~--- число документов, содержащих терм $k$\\
+    IDF как бы нормирует всякие частые слова типа местоимений\\
+    $\log$ потому $N$ может быть большим \dots
+
+    Вместо TF и/или вместо IDF могут использоваться что-то другое, но похожее (в основном, там разные нормализации и сглаживания) 
+
+    Для запросов тоже нужно считать term weights, обычно говорят, что это делается ``in a similar manner''.\\
+    Но для этого нам нужна коллекция запросов. Пока её нет, можно только бинарные/унарные характеристики для TF/IDF делать.
+
+    Можно ещё модифицировать всё это дело, чтобы учитывать релевантность. Это называется Roccio modification
+
+    $$q_j' = \alpha  q_j + \beta \frac{1}{|Rel|} \sum\limits_{D_i \in Rel} d_{ij} - \gamma \frac{1}{|Nonrel|} \sum\limits_{D_i \in Nonrel} d_{ij}$$
+
+    Общий смысл: для каждого терма в запросе ещё учитываем, сколько раз он встречался в релевантных и нерелевантных документах (релевантность относительно запроса).
+
+    Reasonable parameters ($\alpha, \beta, \gamma$): (8, 16, 4) или (1, 0.75, 0.15)
+
+    \smallskip\smallskip
+    {\bf TF saturation}\\
+    $\frac{TF}{TF + k}$
+
+    \smallskip\smallskip
+    {\bf BestMatching25 (BM25)}\\
+    Это формула для расстояния (вместо косинусного)
+     $$ BM25(D_i, Q) = \sum\limits_{t \in Q} \frac{f_{it} \cdot (k + 1)}{(f_{it} + k (1 - b + b \frac{l(D_i)}{avgl(D)})} \log \frac{N - n_t + 0.5}{n_t + 0.5}$$
+     ($l(D)$~--- длина документа D, $avgl(D)$~--- средняя длина)
+
+     (Легчайшая формула, я считаю)
+
+     \smallskip\smallskip
+     Приходите к нам в BM25, у нас есть:
+      \begin{itemize}
+        \item $\frac{f_{it}}{f_{it} + k}$~--- TF saturation
+        \item $\frac{l(D_i)}{avgl(D)}$~--- учитывание длины документа
+        \item $\log \frac{N - n_t + 0.5}{n_t + 0.5}$~--- fancy IDF
+        \item $k, b$~--- mAgIc CoNsTaNtS, $k \in [1.2, 2], b = 0.75$
+      \end{itemize}
+
+    \smallskip\smallskip
+    \textit{Мне кажется, в тот момент, когда люди добавляют три коэффициента в формулу, надо переставать говорить, что она чем-то мотивирована}
+
+    Жесть, какой большой вопрос ...
+
+
+
+
+\pagebreak %------------------------
+
+\section{} %6
+
+  \subsection{Препроцессинг текста. Стемминг}
+    {\bf Text processing pipeline}:
+      \begin{itemize}
+          \item Удаляем пробелы и знаки препинания
+          \item Удаляем большие буквы (в начале предложений), имена собственные не трогаем (entity recognition)
+          \item Удаляем stop-слова
+          \item Конвертируем term $\to$ stem
+          \item Работаем с фразами
+          \item Применяем какие-то language-specific processing rules
+      \end{itemize}
+
+      \smallskip\smallskip
+      {\bf Стоп-слова} это кто (who?)
+        \begin{itemize}
+          \item Frequency-based\\
+           Задаём порог частотности, всё, что чаще~--- в мусорку
+          \item Dictionary-based\\
+          Создаём мусорный словарь
+        \end{itemize}
+      Последнее время не очень их любят, потому что они часто есть во фразах (устойчивых выражений)
+
+      \smallskip\smallskip
+      {\bf Stemming}
+        \begin{itemize}
+            \item Dictionary-based\\
+              храним словарь <``инфинитив'', все возможные словоформы>\\
+              нужно аккуратно работать с омонимами/омоформами (словами, которые пишутся одинаково, но значат разное)\\
+              Проблема: если слова нет в словаре, то грустим
+            \item Algorithmic\\
+              Самый известный (для английского)~--- Porter stemmer (там куча последовательных ифов)
+            \item Hybrid\\
+              Krovetz stemmer: Пока слова нет словаре, пытаемся отрезать от него кусочек (суффикс (чаще) или префикс (реже))\\
+              В итоге получаем инфинитивы (а не стемы, как в Porter stemmer)
+        \end{itemize}
+      Все эти стеммеры делаются отдельно для каждого языка, поэтому на английском лучше искать в гугле, а на русском~--- в яндексе\\
+      Что делаем с фразами: ищем частые $n$-граммы / ищем \textit{noun phrases} / в inverted индексе ищем tropical fish
+      \pagebreak
+
+  \subsection{Ранжирование. PageRank, HITS}
+    Вот эти ребята~--- это Link-based ranking methods\\
+    Web graph: вершины~--- документы, рёбра~--- ссылки, на рёбрах написаны тексты ссылок
+
+    \smallskip\smallskip
+    {\bf Random walk}\\
+    Давайте по нему случайно ходить (как пользователи): начинаем на рандомной странице, переходим по ссылке
+    $$p(d_i) = \sum\limits_{j: d_j \to d_i} \frac{p(d_j)}{|k: d_j \to d_k|}$$
+    Ну понятно, просто формула как в Марковских цепях
+
+    \smallskip\smallskip
+    {\bf Teleportation}\\
+    Если попали на страницу, из которой нет исходящих ссылок, не будем же мы там вечно сидеть. В таком случае мы просто равновероятно прыгнем на любую страницу в интернете
+    $$p(d_i) = \alpha \frac{1}{N}$$
+    Ну и понятно, что телепортироватся можно не только от безысходности, но и просто так
+
+    \smallskip\smallskip
+    {\bf PageRank}\\
+    Собственно, итоговая формула
+    $$p(d_i) = (1 - \alpha) \sum\limits_{j: d_j \to d_i} \frac{p(d_j)}{|k: d_j \to d_k|} + \alpha \frac{1}{N}$$
+    Ну и по Эргодической теореме Маркова у нас существует стационарное распределение $\pi$.\\
+    Тогда $\pi(d)$~--- это и есть PageRank.\\
+    PageRank придумал Larry Page, один из основателей гугла.\\
+    Есть два способа стационарное состояние найти: алгоритмом Гаусса (потому что $\pi = \pi P$) или найти распределение на каком-нибудь большом шаге: $\pi \sim x_0 P^{n}, n \to \infty$, говорят, что делают вторым.\\
+    Что не так с PageRank? Он никак не учитывает слова на ссылке.
+
+    \smallskip\smallskip
+    {\bf Hypertext-included topic search (HITS)}\\
+    Это всё создавалось в начала 2000, тогда интернет был маленьким и считалось, что он выглядит как-то так:
+    \begin{itemize}
+      \item есть Хабы (Hubs) и Авторитеты (Authorities)
+      \item Авторитет~--- страничка с ответом на наш запрос
+      \item Хаб~--- страничка с хорошим списком ссылок, в том числе со ссылкой на наш Авторитет
+      \item Т.е. у нас двудольный такой граф получается
+      \item Hub score: $h(d) = \sum\limits_{y: d \to y} a(y)$
+      \item Authority score: $a(d) = \sum\limits_{y: y \to d} h(y)$
+      \pagebreak
+      \item Тогда алгоритм примерно такой:
+        \begin{itemize}
+          \item С помощью тупой системы (например, на основе BM25) собрать список документов, примерно относящихся к запросу
+          \item Построить по этим документам web-подграф
+          \item Выдать всему изначально $h$ и $a$ равные 1
+          \item Итеративно их пересчитываем (пока меняются) (с нормализацией~--- на корень из суммы квадратов делим)
+          \item Выдаём пользователю top-scoring хабы и авторитеты
+        \end{itemize} 
+        Можно запускать HITS для каждого терма в отдельности, потом использовать полученные $h$ и $a$ как веса
+    \end{itemize}
+\pagebreak %------------------------
+
+\section{} %7
+
+  \subsection{Обратный индекс. Two-pass index, one-pass index with merging}
+    Это про то, как так хранить индекс, чтобы при добавлении одного документа, всё перезаписывать не приходилось
+
+    \smallskip\smallskip
+    {\bf Two-pass index}\\
+      Сначала один раз проходимся по forward индексу, считаем, число записей $\SO$ сколько нужно памяти выделить. Потом эту память выделяем. Потом ещё раз проходимся и уже на нужные места всё кладём\
+
+    \smallskip\smallskip
+    {\bf One-pass index with merging}\\
+      Делаем два маленьких индекса $\to$ сливаем в один побольше\\
+    Ну, и конечно, для всего этого юзаем Map-Reduce
+    \pagebreak
+
+  \subsection{Расширение запроса. Term association, relevance feedback}
+    {\bf Тезаурусы}\\
+      Нужны ещё, чтобы находить связи между словами\\
+      ``tank aquarium'' $\to$ + ``fish''\\
+      Бывают мануальные, ещё есть WordNet\\
+      Controlled vocabulary~--- каноничный термин (для каждой области), по которому нужно всё искать.\\
+      Есть ещё автоматические (by context similarity) (тут было про 4 метрики разные)
+
+    \smallskip\smallskip
+    {\bf Relevance feedback}
+      \begin{itemize}
+          \item Юзер задаёт вопрос
+          \item Система возвращает initial set результатов
+          \item Какие-то результаты помечаются как (не)релевантные
+          \item Система учитывает это и переделывает выдачу
+      \end{itemize}
+    \smallskip
+      Как оценивать релевантность
+        \begin{itemize}
+            \item (Explicit) Relevance feedback~---- нанять асессоров (или пользователей попросить)
+            \item Pseudo-relevance~--- top-k из выдачи\\
+            типа мы спросили ``tank aquarium'', в первых $k$ документах ``fish tank'' $\SO$ добавляем ``fish'' 
+            \item Implicit relevance~--- смотрим, куда пользователи кликают
+        \end{itemize}
+
+    \smallskip\smallskip
+    {\bf Using query log}\\
+      Можем смотреть, чем расширять термы в старых запросах\\
+      Удобно, потому что запросы короче документов
+
+\pagebreak %------------------------
+
+\section{} %8
+
+  \subsection{Типы подходов к объявлению обратного индекса}
+    {\bf No merge}\\
+      Отдельно храним \textit{Old Main index} и \textit{Delta index} (несколько)\\
+      Минус: для каждого запроса нужно идти и в основной индекс и в дельты, потом смотреть, где у нас что-то поменялось (даты сравнивать)
+
+    \smallskip\smallskip
+    {\bf Incremental update}\\
+      Примерно как вектор (типа есть свободное место (capacity - size))\\
+      Минус: иногда нужно расширять буфер, при этом нельзя будет писать/читать
+
+    \smallskip\smallskip
+    {\bf Immediate merge}\\
+      Переписываем весь индекс каждый раз, когда приходит дельта
+
+    \smallskip\smallskip
+    {\bf Lazy merge}\\
+      Потихоньку сливаем индекс, причём ещё не слитые дельты тоже как-то организованно храним\\
+      Выглядит примерно как пополняемые структуры, типа мы сливаем дельты, пока они не станут супер-большими, тогда их вливаем в большой индекс\\
+      \textit{Тут была шутка про Валрусы}
+    \pagebreak
+
+  \subsection{Дополнение запроса. RW on query flow graph. RW on co-clicked graph}
+    Тут оцениваются в основном логи. Типа пользователь либо сам дописал, что мы ему предложили, либо кликнул\\
+    Можно расширить эту концепцию и нарисовать граф переходов (с вероятностями)
+
+    \smallskip\smallskip
+    {\bf Random walk (RW) on query flow graph}\\
+      Начинаем с исходного запроса, смотрим, куда можно доблуждать, выбираем самое вероятное и предлагаем
+
+    \smallskip\smallskip
+    {\bf Random walk (RW) on co-clicked bipartite graph}\\
+      Двудольный граф: запросы ~--- сайты.\\
+      $w(i, k)$~--- сколько раз по запросу $i$ кликают на сайт $k$ (и наоборот)\\
+      $p_{ij} = \sum\limits_{k \in V_2} \frac{w(i, k)}{\mathcal{Z}_i} \frac{w(k, j)}{\mathcal{Z}_j}$\\
+      Для каждого сайта считаем $h_i(t + 1) = \sum\limits_j p_{ij} h_j(t)$~--- с какой вероятностью дойдём до запроса $i$ через время $t$\\
+      Выдаём сайты с минимальным средним $h_i$
+
+\pagebreak %------------------------
+
+\section{} %9
+
+  \subsection{Распределение обратного индекса, подокументное, позапросное}
+    Это как мы индекс по нодам распределяем
+
+    \smallskip\smallskip
+    {\bf Document based}
+      \begin{itemize}
+          \item все упоминания одного документа держатся на одной ноде
+          \item более сбалансированное (для терма трудно предсказать, во скольких документах он встретится, а для документа легко)
+          \item запрос уходит на несколько нод сразу $\SO$ можно параллелить
+          \item но приходится тогда на каждой ноде хранить весь словарь
+          \item ещё такой строится легче
+      \end{itemize}
+
+    \smallskip\smallskip
+    {\bf Term-based}
+      \begin{itemize}
+          \item менее сбалансированное
+          \item вся информация для терма лежит на одной ноде, не нужно потом ничего объединять
+          \item файлы с атрибутами страниц приходится дублировать
+          \item конструировать сложно
+      \end{itemize}
+    \pagebreak
+
+  \subsection{Обработка запросов. Исправление опечаток, поиск омофонов}
+    Смысл обработки запросов: дойти от query (запроса) до intent (то, что юзер на самом деле хочет).
+
+    \smallskip\smallskip
+    Основные этапы:
+      \begin{itemize}
+          \item Normalisation~--- убираем капитализацию, перевод в одну кодировку (utf-8)
+          \item Spelling correction\\
+          тут на следующий этап передаёт не только спелл-чекнутый запрос, но и оригинальный
+          \item Segmentation~--- terms, phrases, urls \dots
+          \item Stemming
+          \item Annotation~--- entity extraction, geotagging
+          \item Tern expansion~--- synonyms, plurals \dots
+          \item Бывает ещё query relaxation~--- это когда у нас ничего не нашлось на оригинальный запрос, но на менее точный можно найти
+      \end{itemize}
+      Если запрос мультиязычный, один из зыков превращается в entity (потому что это, скорее всего, какое-нибудь название)
+
+      \smallskip\smallskip
+      Дальше будет про \textit{Spell checking}
+
+      \smallskip\smallskip
+      {\bf Simple typos}\\
+        Берём какой-то подмножество слов (например, с той же первой буквой + примерно такой же длиной)\\
+        Считаем {\bf Damerau-Levenshtein distance} (как просто Левенштейна + можно делать свап соседних букв)\\
+        Есть другой способ: {\bf $k$-gram index optimization}\\
+        Разбиваем наше слово на $k$-граммы, потом ищем слова, у которых Jaccard coefficient ($|A \cap B| / |A \cup B|$) (по числу общих $k$-грам) самый большой
+
+      \smallskip\smallskip
+      {\bf Homophones \& Soundex Code}\\
+        Омофоны~--- слова, которые одинаково слышатся.
+
+        \smallskip\smallskip
+        Soundex code:
+          \begin{itemize}
+            \item Оставляем первую букву (in uppercase)
+            \item Заменяем \{a, e, o, i, u, y, h, w\} (все гласные + h + w) на дефис
+            \item Остальные буквы бьются на 6 классов (по похожести) и заменяются цифрами
+            \item Удаляем подряд-идущие одинаковые символы
+            \item Удаляем все дефисы
+            \item Берём первые три цифры (если их меньше, то нули)
+          \end{itemize}
+        Ну, понятно, что всё мы так не засечём (например, удаление буквы)\\
+
+      \pagebreak
+      {\bf Multiple corrections}\\
+        Noisy channel model
+          \begin{itemize}
+              \item Человек хочет написать слово $w$ с вероятностью $P(w)$
+              \item Человек пытается его написать
+              \item Но шумный канал (мозг) заставляет его написать слово $e$ с вероятностью $P(e | w)$
+          \end{itemize}
+      Ранжируем по $P(w | e) = \frac{P(e | w) P(w)}{P(e)} \propto P(e | w) P(w)$ (пропорционально)\\
+      $P(w) = \frac{tf(w)}{\sum\limits_{w_i \in C} tf(w_i)}$ $\leftarrow$ учитываем популярность слов\\
+      $P(e | w)$ например Дамерау-Левенштейном считаем
+
+      \smallskip\smallskip
+      {\bf Considering context}\\
+      Теперь ранжируем по $P(w | e) \hat{P}(w)$, где $\hat{P}(w) = \lambda P(w) + (1 - \lambda)P(w | w_p)$\\
+      $P(w | w_p)$~--- вероятность в контексте
+
+
+
+\end{document}
